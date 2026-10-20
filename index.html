@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f5ef">
+  <title>Palindrome — read it both ways</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f7f5ef;
+      --surface: #fffefa;
+      --ink: #202822;
+      --muted: #747b73;
+      --line: #e8e7de;
+      --green: #317354;
+      --green-soft: #e9f3ec;
+      --coral: #e8785e;
+      --coral-soft: #fbede8;
+      --shadow: 0 20px 60px rgb(38 48 39 / 8%);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      padding: 36px 24px 48px;
+      background:
+        radial-gradient(ellipse at 50% 0%, #fffdf5 0, transparent 52%),
+        var(--paper);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button, textarea { font: inherit; }
+
+    .page {
+      width: min(100%, 760px);
+      margin: 0 auto;
+    }
+
+    .topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 58px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--ink);
+      letter-spacing: .08em;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 30px;
+      height: 30px;
+      place-items: center;
+      border: 1.5px solid var(--green);
+      border-radius: 50%;
+      color: var(--green);
+      font-family: Georgia, serif;
+      font-size: 17px;
+      font-weight: 400;
+      letter-spacing: 0;
+    }
+
+    .top-note { font-weight: 500; letter-spacing: .03em; text-transform: none; }
+
+    .intro { margin-bottom: 30px; text-align: center; }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 750;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(42px, 8vw, 66px);
+      font-weight: 500;
+      letter-spacing: -.055em;
+      line-height: 1.03;
+    }
+
+    h1 span { color: var(--coral); font-style: italic; }
+
+    .subtitle {
+      max-width: 440px;
+      margin: 17px auto 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    .checker {
+      overflow: hidden;
+      border: 1px solid rgb(223 223 214 / 85%);
+      border-radius: 18px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .input-area { padding: 26px 28px 22px; }
+
+    .field-label {
+      display: block;
+      margin-bottom: 11px;
+      color: #555e55;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+
+    textarea {
+      display: block;
+      width: 100%;
+      min-height: 112px;
+      resize: vertical;
+      padding: 17px 18px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      outline: none;
+      background: #fff;
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 19px;
+      line-height: 1.5;
+      transition: border-color .18s, box-shadow .18s;
+    }
+
+    textarea::placeholder { color: #a5aaa1; }
+    textarea:focus { border-color: #78a58a; box-shadow: 0 0 0 3px rgb(49 115 84 / 10%); }
+
+    .input-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 13px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .examples { display: flex; flex-wrap: wrap; gap: 7px; }
+
+    .example {
+      padding: 7px 11px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: transparent;
+      color: #596158;
+      cursor: pointer;
+      font-size: 11px;
+      transition: border-color .16s, background .16s, color .16s;
+    }
+
+    .example:hover, .example:focus-visible {
+      border-color: #a6c1ad;
+      outline: none;
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    .result {
+      min-height: 116px;
+      padding: 23px 28px;
+      border-top: 1px solid var(--line);
+      background: #fbfaf6;
+    }
+
+    .result-heading {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .result-icon {
+      display: grid;
+      flex: 0 0 38px;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border-radius: 50%;
+      background: #efeee8;
+      color: #8a9087;
+      font-size: 18px;
+    }
+
+    .result-copy { min-width: 0; }
+
+    .result-title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 750;
+      letter-spacing: -.02em;
+    }
+
+    .result-detail { margin: 4px 0 0; color: var(--muted); font-size: 12px; }
+
+    .result.is-yes { background: var(--green-soft); }
+    .result.is-yes .result-icon { background: #d5e9da; color: var(--green); }
+    .result.is-yes .result-title { color: var(--green); }
+    .result.is-no { background: var(--coral-soft); }
+    .result.is-no .result-icon { background: #f5dcd3; color: #bb5942; }
+    .result.is-no .result-title { color: #a84c37; }
+
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding: 0 28px 24px;
+      background: #fbfaf6;
+    }
+
+    .text-card {
+      min-width: 0;
+      padding: 14px 15px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--surface);
+    }
+
+    .text-card-label {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 750;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .text-card-value {
+      overflow-wrap: anywhere;
+      margin: 0;
+      color: #39433a;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .longest {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 18px;
+      padding: 17px 20px;
+      border: 1px solid #eadfd4;
+      border-radius: 12px;
+      background: #fffaf3;
+    }
+
+    .longest-label {
+      margin: 0 0 5px;
+      color: #8c7057;
+      font-size: 10px;
+      font-weight: 750;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .longest-value {
+      overflow-wrap: anywhere;
+      margin: 0;
+      color: #42382f;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 18px;
+    }
+
+    .longest-length {
+      flex: 0 0 auto;
+      color: #9a8773;
+      font-size: 11px;
+      text-align: right;
+    }
+
+    .footnote {
+      margin: 15px 0 0;
+      color: #8a8e85;
+      font-size: 11px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    @media (max-width: 560px) {
+      body { padding: 23px 15px 34px; }
+      .topline { margin-bottom: 43px; }
+      .top-note { display: none; }
+      .input-area { padding: 22px 18px 19px; }
+      .input-footer { align-items: flex-start; flex-direction: column; }
+      .comparison { padding: 0 18px 19px; }
+      .result { padding: 20px 18px; }
+    }
+
+    @media (max-width: 390px) {
+      .comparison { grid-template-columns: 1fr; }
+      .text-card { padding: 12px 14px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topline">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">↔</span> PALINDROME</div>
+      <span class="top-note">A little wordplay, both ways</span>
+    </header>
+
+    <section class="intro" aria-labelledby="page-title">
+      <p class="eyebrow">The palindrome checker</p>
+      <h1 id="page-title">Reads the same<br><span>both ways.</span></h1>
+      <p class="subtitle">Type a word, phrase, or sentence. We’ll take away the spaces and punctuation and see what’s left.</p>
+    </section>
+
+    <section class="checker" aria-label="Palindrome checker">
+      <div class="input-area">
+        <label class="field-label" for="phrase">Your word, phrase, or sentence</label>
+        <textarea id="phrase" maxlength="2000" placeholder="Try “A man, a plan, a canal: Panama”" spellcheck="false"></textarea>
+        <div class="input-footer">
+          <div class="examples" aria-label="Try an example">
+            <button class="example" type="button" data-example="A man, a plan, a canal: Panama">Panama</button>
+            <button class="example" type="button" data-example="Was it a car or a cat I saw?">A car or a cat</button>
+            <button class="example" type="button" data-example="Never odd or even">Never odd</button>
+            <button class="example" type="button" data-example="racecar">Racecar</button>
+            <button class="example" type="button" data-example="Hello, world!">Hello world</button>
+          </div>
+          <span id="character-count">0 / 2,000</span>
+        </div>
+      </div>
+
+      <div class="result" id="result" aria-live="polite" aria-atomic="true">
+        <div class="result-heading">
+          <span class="result-icon" id="result-icon" aria-hidden="true">↔</span>
+          <div class="result-copy">
+            <p class="result-title" id="result-title">Your answer will appear here</p>
+            <p class="result-detail" id="result-detail">Enter some text to get started.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="comparison" aria-label="Cleaned text and its reverse">
+        <div class="text-card">
+          <p class="text-card-label">Cleaned text</p>
+          <p class="text-card-value" id="cleaned-text">—</p>
+        </div>
+        <div class="text-card">
+          <p class="text-card-label">Read backwards</p>
+          <p class="text-card-value" id="reversed-text">—</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="longest" aria-labelledby="longest-label">
+      <div>
+        <p class="longest-label" id="longest-label">Longest palindrome word</p>
+        <p class="longest-value" id="longest-value">—</p>
+      </div>
+      <span class="longest-length" id="longest-length">Type to explore</span>
+    </section>
+    <p class="footnote">Only letters and numbers count. Spaces, punctuation, and letter case are ignored.</p>
+  </main>
+
+  <script>
+    const input = document.querySelector("#phrase");
+    const result = document.querySelector("#result");
+    const resultIcon = document.querySelector("#result-icon");
+    const resultTitle = document.querySelector("#result-title");
+    const resultDetail = document.querySelector("#result-detail");
+    const cleanedText = document.querySelector("#cleaned-text");
+    const reversedText = document.querySelector("#reversed-text");
+    const longestValue = document.querySelector("#longest-value");
+    const longestLength = document.querySelector("#longest-length");
+    const characterCount = document.querySelector("#character-count");
+
+    function clean(text) {
+      return Array.from(text.toLowerCase().matchAll(/[\p{L}\p{N}]/gu), match => match[0]);
+    }
+
+    function findLongestPalindromeWord(text) {
+      let longest = "";
+
+      for (const match of text.matchAll(/[\p{L}\p{N}]+/gu)) {
+        const word = match[0];
+        const characters = clean(word);
+        const normalized = characters.join("");
+        const reversed = Array.from(normalized).reverse().join("");
+
+        if (characters.length > 1 && normalized === reversed && characters.length > clean(longest).length) {
+          longest = word;
+        }
+      }
+
+      return longest;
+    }
+
+    function update() {
+      const original = input.value;
+      const characters = clean(original);
+      const normalized = characters.join("");
+      const reversed = Array.from(normalized).reverse().join("");
+      const hasText = characters.length > 0;
+      const isPalindrome = hasText && normalized === reversed;
+
+      characterCount.textContent = `${Array.from(original).length.toLocaleString()} / 2,000`;
+      cleanedText.textContent = hasText ? normalized : "—";
+      reversedText.textContent = hasText ? reversed : "—";
+      result.classList.toggle("is-yes", isPalindrome);
+      result.classList.toggle("is-no", hasText && !isPalindrome);
+
+      if (!hasText) {
+        resultIcon.textContent = "↔";
+        resultTitle.textContent = "Your answer will appear here";
+        resultDetail.textContent = "Enter some text to get started.";
+        longestValue.textContent = "—";
+        longestLength.textContent = "Type to explore";
+        return;
+      }
+
+      resultIcon.textContent = isPalindrome ? "✓" : "×";
+      resultTitle.textContent = isPalindrome ? "It’s a palindrome!" : "Not a palindrome";
+      resultDetail.textContent = isPalindrome
+        ? "The cleaned text reads the same backwards."
+        : "The cleaned text changes when you read it backwards.";
+
+      const longestWord = findLongestPalindromeWord(original);
+      longestValue.textContent = longestWord || "No palindromic words found";
+      longestLength.textContent = longestWord
+        ? `${clean(longestWord).length} ${clean(longestWord).length === 1 ? "character" : "characters"}`
+        : "No matching words";
+    }
+
+    input.addEventListener("input", update);
+    document.querySelectorAll(".example").forEach(button => {
+      button.addEventListener("click", () => {
+        input.value = button.dataset.example;
+        update();
+        input.focus();
+      });
+    });
+  </script>
+</body>
+</html>
